@@ -26,7 +26,7 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.3</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.4</div></div>
 <div class="hero"><div class="heroLabel">TOTAL EXPENSE</div><div class="heroAmount" id="total">₹0</div><div class="heroBottom"><span id="count">0 entries</span><span>Local &amp; private</span></div></div>
 </header>
 <main>
@@ -36,7 +36,7 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.3</div></div>
+<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.4</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -58,9 +58,22 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 const KEY="homeExpenseLedgerV1",$=x=>document.getElementById(x),money=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2}),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let data=[];try{data=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(data))data=[]}catch(e){data=[]}
 const today=new Date().toISOString().slice(0,10);$("date").value=today;$("to").value=today;$("from").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
-const emo={Grocery:"🛒",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
+const emo={Grocery:"🛒","Household / Home Expense":"🏠",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();report()}
 function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("total").textContent=money(t);$("listTotal").textContent=money(t);$("count").textContent=data.length+" "+(data.length===1?"entry":"entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(e.date)} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="del" onclick="del('${e.id}')">Delete</button></div>`;b.appendChild(d)})}
+const HOME_EXPENSE="வீட்டு செலவு";
+function syncExpenseForCategory(){
+  const cat=$("category"), exp=$("expense");
+  if(cat.value==="Household / Home Expense"){
+    exp.value=HOME_EXPENSE;
+    exp.dataset.autofilled="1";
+  }else if(exp.dataset.autofilled==="1" && exp.value===HOME_EXPENSE){
+    exp.value="";
+    delete exp.dataset.autofilled;
+  }
+}
+$("category").addEventListener("change",syncExpenseForCategory);
+$("expense").addEventListener("input",()=>{delete $("expense").dataset.autofilled});
 window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);save()}}
 function report(){
  const a=$("from").value,b=$("to").value;
