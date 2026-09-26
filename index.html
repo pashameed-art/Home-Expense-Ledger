@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.8</title>
+<title>Home Expense Ledger V5.9</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
@@ -26,8 +26,7 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.8</div></div>
-
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.9</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -36,7 +35,7 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.8</div></div>
+<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.9</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -60,7 +59,7 @@ let data=[];try{data=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArr
 const today=new Date().toISOString().slice(0,10);$("date").value=today;$("to").value=today;$("from").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
 const emo={Grocery:"🛒","Household / Home Expense":"🏠","Property Tax / House Tax":"🏛️",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();report()}
-function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(e.date)} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="del" onclick="del('${e.id}')">Delete</button></div>`;b.appendChild(d)})}
+function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("total").textContent=money(t);$("listTotal").textContent=money(t);$("count").textContent=data.length+" "+(data.length===1?"entry":"entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(e.date)} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="del" onclick="del('${e.id}')">Delete</button></div>`;b.appendChild(d)})}
 const HOME_EXPENSE="வீட்டு செலவு";
 function syncExpenseForCategory(){
   const cat=$("category"), exp=$("expense");
@@ -77,14 +76,32 @@ $("expense").addEventListener("input",()=>{delete $("expense").dataset.autofille
 window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);save()}}
 window.generateExpenseReport=function report(){
  const a=$("from").value,b=$("to").value;
- if(a&&b&&a>b){$("report").innerHTML='<div class="report" style="color:#b42318">From date cannot be after To date.</div>';return}
- const rows=data.filter(e=>(!a||e.date>=a)&&(!b||e.date<=b));
- const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
- rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- let o='<div class="report" style="margin-top:12px"><div style="font-size:12px;color:#667085">'+rows.length+' entries</div><div class="big">'+money(total)+'</div>';
- if(rows.length){
-   o+='<div style="margin-top:12px;font-weight:800;font-size:13px">Category-wise Total</div>';
-   Object.entries(cats).sort((x,y)=>y[1]-x[1]).forEach(([k,v])=>o+='<div class="cat"><span>'+esc(k)+'</span><b>'+money(v)+'</b></div>');
+ if(a&&b&&a>b){
+   $("report").innerHTML='<div class="report" style="color:#b42318">From date cannot be after To date.</div>';
+   return;
+ }
+ const rows=data
+   .filter(e=>(!a||e.date>=a)&&(!b||e.date<=b))
+   .sort((x,y)=>(y.date+y.id).localeCompare(x.date+x.id));
+
+ let o='<div class="report" style="margin-top:12px">';
+ if(!rows.length){
+   o+='<div class="empty">No expenses found for the selected date range.</div>';
+ }else{
+   o+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">';
+   o+='<thead><tr style="border-bottom:2px solid var(--line);text-align:left">';
+   o+='<th style="padding:9px 6px">Date</th>';
+   o+='<th style="padding:9px 6px">Expense</th>';
+   o+='<th style="padding:9px 6px;text-align:right">Amount</th>';
+   o+='</tr></thead><tbody>';
+   rows.forEach(e=>{
+     o+='<tr style="border-bottom:1px solid var(--line)">';
+     o+='<td style="padding:9px 6px;white-space:nowrap">'+esc(e.date||"")+'</td>';
+     o+='<td style="padding:9px 6px">'+esc(e.expense||"")+'</td>';
+     o+='<td style="padding:9px 6px;text-align:right;font-weight:800;white-space:nowrap">'+money(e.amount)+'</td>';
+     o+='</tr>';
+   });
+   o+='</tbody></table></div>';
  }
  o+='</div>';
  $("report").innerHTML=o;
@@ -101,7 +118,7 @@ $("pdf").onclick=()=>{
  const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
  rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.8",14,16);
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.9",14,16);
  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
  const body=[...rows].sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
