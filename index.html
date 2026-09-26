@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.14</title>
+<title>Home Expense Ledger V5.16</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.15</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.16</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -71,6 +71,10 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
+</div>
+<div class="grid2" style="margin-top:4px">
+ <div><label>Search</label><input id="reportSearch" type="search" placeholder="Expense / Notes / Category"></div>
+ <div><label>Category</label><select id="reportCategory"><option value="">All Categories</option><option>Car</option><option>Clothing</option><option>EB / Electricity</option><option>Food / Hotel</option><option>Fuel</option><option>Grocery</option><option>House Maintenance</option><option>Household / Home Expense</option><option>Medical</option><option>Mobile / Recharge</option><option>Other</option><option>Property Tax / House Tax</option><option>Travel</option><option>Vegetables</option><option>Water</option></select></div>
 </div>
 <div class="grid2" style="margin-top:4px">
  <button class="btn light" id="view" type="button" onclick="window.generateExpenseReport()">View Report</button>
@@ -112,17 +116,24 @@ $("expense").addEventListener("input",()=>{delete $("expense").dataset.autofille
 window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);save()}}
 window.generateExpenseReport=function report(){
  const a=$("from").value,b=$("to").value;
+ const q=($("reportSearch").value||"").trim().toLowerCase();
+ const cat=$("reportCategory").value||"";
  if(a&&b&&a>b){
    $("report").innerHTML='<div class="report" style="color:#b42318">From date cannot be after To date.</div>';
    return;
  }
  const rows=data
    .filter(e=>(!a||e.date>=a)&&(!b||e.date<=b))
+   .filter(e=>!cat||e.category===cat)
+   .filter(e=>!q||[e.expense,e.notes,e.category,e.date].some(v=>String(v??"").toLowerCase().includes(q)))
    .sort((x,y)=>(y.date+y.id).localeCompare(x.date+x.id));
 
  let o='<div class="report" style="margin-top:12px">';
+ if(q||cat){
+   o+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">Filters: '+(q?'Search “'+esc(q)+'”':'')+(q&&cat?' • ':'')+(cat?esc(cat):'')+'</div>';
+ }
  if(!rows.length){
-   o+='<div class="empty">No expenses found for the selected date range.</div>';
+   o+='<div class="empty">No expenses found for the selected filters.</div>';
  }else{
    o+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">';
    o+='<thead><tr style="border-bottom:2px solid var(--line);text-align:left">';
@@ -147,13 +158,15 @@ window.generateExpenseReport=function report(){
 }
 
 $("form").onsubmit=e=>{e.preventDefault();let n=Number($("amount").value);if(!Number.isFinite(n)||n<0)return;data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),date:$("date").value,expense:$("expense").value.trim(),category:$("category").value,amount:n,notes:$("notes").value.trim()});save();e.target.reset();$("date").value=new Date().toISOString().slice(0,10);$("expense").focus()}
-$("view").addEventListener("click",report);$("from").addEventListener("change",report);$("to").addEventListener("change",report);
+$("view").addEventListener("click",report);$("from").addEventListener("change",report);$("to").addEventListener("change",report);$("reportSearch").addEventListener("input",report);$("reportCategory").addEventListener("change",report);
 $("clearReport").addEventListener("click",()=>{$("report").innerHTML="";});
 const fmtPDFDate=s=>s?s.split("-").reverse().join("/"):"All";
 $("pdf").onclick=async()=>{
  let a=$("from").value,b=$("to").value;
+ const q=($("reportSearch").value||"").trim().toLowerCase();
+ const cat=$("reportCategory").value||"";
  if(a&&b&&a>b){alert("From date cannot be after To date.");return}
- let rows=data.filter(e=>(!a||e.date>=a)&&(!b||e.date<=b)).sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id));
+ let rows=data.filter(e=>(!a||e.date>=a)&&(!b||e.date<=b)).filter(e=>!cat||e.category===cat).filter(e=>!q||[e.expense,e.notes,e.category,e.date].some(v=>String(v??"").toLowerCase().includes(q))).sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id));
  if(!rows.length){alert("No expenses found for the selected date range.");return}
  if(!window.jspdf||!window.html2canvas){alert("PDF library is still loading. Please try again.");return}
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
@@ -163,7 +176,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.15</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.16</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
