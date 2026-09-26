@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.21</title>
+<title>Home Expense Ledger V5.22</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -54,7 +54,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
   input,select,.btn{height:47px}
 }
 
-/* V5.21 compact mobile layout */
+/* V5.22 compact mobile layout */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 main{width:100%;max-width:620px;margin:0 auto;padding:12px 10px 24px}
 .card{width:100%;padding:13px;margin-bottom:10px;border-radius:17px}
@@ -91,7 +91,7 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.21</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.22</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -241,7 +241,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.21</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.22</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
@@ -275,7 +275,7 @@ $("pdf").onclick=async()=>{
  }catch(err){console.error(err);alert("PDF உருவாக்க முடியவில்லை. மீண்டும் முயற்சி செய்யவும்.");}
  finally{wrap.remove();}
 };
-$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"4.0",exportedAt:new Date().toISOString(),entries:data},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.22",exportedAt:new Date().toISOString(),entries:data},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("restore").onclick=()=>$("file").click();
 $("file").onchange=async e=>{
  let f=e.target.files[0]; if(!f)return;

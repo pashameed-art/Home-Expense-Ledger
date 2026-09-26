@@ -1,4 +1,4 @@
-const CACHE="home-expense-ledger-v5-21-force";
+const CACHE="home-expense-ledger-v5-22";
 self.addEventListener("install", event => {
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
