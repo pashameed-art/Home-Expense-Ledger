@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.9</title>
+<title>Home Expense Ledger V5.10</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
@@ -26,16 +26,16 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.9</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.10</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
 <form id="form"><label>Date</label><input id="date" type="date" required><label>Expense</label><input id="expense" placeholder="What did you spend on?" required>
-<div class="grid2"><div><label>Category</label><select id="category"><option>Grocery</option><option>Household / Home Expense</option><option>Property Tax / House Tax</option><option>Vegetables</option><option>Fuel</option><option>EB / Electricity</option><option>Water</option><option>Mobile / Recharge</option><option>House Maintenance</option><option>Medical</option><option>Car</option><option>Travel</option><option>Clothing</option><option>Food / Hotel</option><option>Other</option></select></div><div><label>Amount</label><input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="₹ 0" required></div></div>
+<div class="grid2"><div><label>Category</label><select id="category"><option>Car</option><option>Clothing</option><option>EB / Electricity</option><option>Food / Hotel</option><option>Fuel</option><option>Grocery</option><option>House Maintenance</option><option>Household / Home Expense</option><option>Medical</option><option>Mobile / Recharge</option><option>Other</option><option>Property Tax / House Tax</option><option>Travel</option><option>Vegetables</option><option>Water</option></select></div><div><label>Amount</label><input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="₹ 0" required></div></div>
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.9</div></div>
+<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.10</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -118,7 +118,7 @@ $("pdf").onclick=()=>{
  const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
  rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.9",14,16);
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.10",14,16);
  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
  const body=[...rows].sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
