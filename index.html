@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.11</title>
+<title>Home Expense Ledger V5.12</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.11</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.12</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -67,7 +67,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.11</div></div>
+<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.12</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -134,6 +134,9 @@ window.generateExpenseReport=function report(){
      o+='</tr>';
    });
    o+='</tbody></table></div>';
+   const total=rows.reduce((s,e)=>s+Number(e.amount||0),0);
+   o+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:13px;padding-top:12px;border-top:2px solid var(--line);font-weight:850">';
+   o+='<span>Total Expense</span><span style="font-size:17px">'+money(total)+'</span></div>';
  }
  o+='</div>';
  $("report").innerHTML=o;
@@ -150,7 +153,7 @@ $("pdf").onclick=()=>{
  const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
  rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.11",14,16);
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.12",14,16);
  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
  const body=[...rows].sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
