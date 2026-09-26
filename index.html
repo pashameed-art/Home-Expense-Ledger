@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.12</title>
+<title>Home Expense Ledger V5.13</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.12</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.13</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -67,14 +67,18 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.12</div></div>
+<div class="head"><div class="title">📊 Expense Report</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
 </div>
 <div class="grid2" style="margin-top:4px">
  <button class="btn light" id="view" type="button" onclick="window.generateExpenseReport()">View Report</button>
+ <button class="btn light" id="clearReport" type="button">Clear Report</button>
+</div>
+<div class="grid2" style="margin-top:0">
  <button class="btn" id="pdf" type="button">📄 Export PDF</button>
+ <div></div>
 </div>
 <div id="report" style="display:block"></div>
 </section>
@@ -144,6 +148,7 @@ window.generateExpenseReport=function report(){
 
 $("form").onsubmit=e=>{e.preventDefault();let n=Number($("amount").value);if(!Number.isFinite(n)||n<0)return;data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),date:$("date").value,expense:$("expense").value.trim(),category:$("category").value,amount:n,notes:$("notes").value.trim()});save();e.target.reset();$("date").value=new Date().toISOString().slice(0,10);$("expense").focus()}
 $("view").addEventListener("click",report);$("from").addEventListener("change",report);$("to").addEventListener("change",report);
+$("clearReport").addEventListener("click",()=>{$("report").innerHTML="";});
 $("pdf").onclick=()=>{
  let a=$("from").value,b=$("to").value;
  if(a&&b&&a>b){alert("From date cannot be after To date.");return}
@@ -153,7 +158,7 @@ $("pdf").onclick=()=>{
  const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
  rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.12",14,16);
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.13",14,16);
  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
  const body=[...rows].sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
