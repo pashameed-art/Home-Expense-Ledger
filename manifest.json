@@ -1,5 +1,5 @@
 {
-  "name": "Home Expense Ledger V5.10",
+  "name": "Home Expense Ledger V5.11",
   "short_name": "Home Expense",
   "id": "./?app=home-expense-ledger",
   "start_url": "./?app=home-expense-ledger",
@@ -10,7 +10,7 @@
     "minimal-ui"
   ],
   "orientation": "portrait",
-  "background_color": "#f5f7fb",
+  "background_color": "#f3f6fb",
   "theme_color": "#0b1220",
   "icons": [
     {

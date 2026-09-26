@@ -8,25 +8,57 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.10</title>
+<title>Home Expense Ledger V5.11</title>
 <style>
-:root{--bg:#f5f7fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:linear-gradient(145deg,#0b1220,#182337);color:#fff;padding:20px 18px 22px;border-radius:0 0 28px 28px}
-.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:20px;font-weight:800}.version{font-size:11px;padding:5px 8px;border:1px solid #ffffff30;border-radius:999px}.sub{font-size:12px;color:#aab4c5;margin-top:4px}
-.hero{margin-top:20px}.heroLabel{font-size:12px;color:#aab4c5}.heroAmount{font-size:36px;font-weight:850}.heroBottom{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px}
-main{max-width:760px;margin:auto;padding:16px 15px 30px}.card{background:#fff;border:1px solid #edf0f4;border-radius:22px;padding:17px;margin-bottom:14px;box-shadow:0 7px 24px #1018280a}
-.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.title{font-size:18px;font-weight:800}.pill{font-size:11px;background:var(--soft);padding:6px 9px;border-radius:999px;color:var(--muted);font-weight:700}
-label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6px}input,select{width:100%;height:48px;border:1px solid var(--line);background:#fafbfc;border-radius:13px;padding:0 13px;font-size:15px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{width:100%;height:48px;border:0;border-radius:13px;background:var(--accent);color:#fff;font-size:15px;font-weight:800;margin-top:12px}.btn.light{background:#eef1f5;color:#101828}
-.item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.icon{width:42px;height:42px;border-radius:13px;background:var(--soft);display:grid;place-items:center}.main{min-width:0;flex:1}.name{font-weight:800;font-size:14px}.meta{font-size:11px;color:var(--muted);margin-top:3px}.right{text-align:right}.amt{font-weight:850}.del{border:0;background:#fff1f2;color:#b42318;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:750;margin-top:5px}
-.report{background:#f8fafc;border-radius:16px;padding:13px;margin-top:12px}.big{font-size:26px;font-weight:850}.cat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.cat:last-child{border:0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.empty{text-align:center;color:var(--muted);padding:22px}
+:root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#eef3f9 0%,#f7f9fc 55%,#f3f6fb 100%);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+header{background:linear-gradient(145deg,#0a1220 0%,#18263d 58%,#263e66 100%);color:#fff;padding:18px 17px 20px;border-radius:0 0 30px 30px;box-shadow:0 10px 30px #10182822}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.3px}
+.version{font-size:10px;padding:6px 10px;border:1px solid #ffffff38;border-radius:999px;background:#ffffff12;color:#e7edf8;font-weight:750}
+.sub{font-size:11px;color:#b8c4d6;margin-top:4px}
+main{max-width:760px;margin:auto;padding:15px 14px 32px}
+.card{background:rgba(255,255,255,.97);border:1px solid #e8ecf2;border-radius:20px;padding:16px;margin-bottom:13px;box-shadow:0 8px 25px #10182810}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:10px}
+.title{font-size:18px;font-weight:850;letter-spacing:-.2px}
+.pill{font-size:10px;background:#f0f3f8;padding:6px 9px;border-radius:999px;color:#596579;font-weight:800;white-space:nowrap}
+label{display:block;font-size:12px;font-weight:800;color:#344054;margin:10px 0 6px}
+input,select{width:100%;height:48px;border:1px solid #dfe4ec;background:#fbfcfe;border-radius:13px;padding:0 13px;font-size:15px;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s,background .15s}
+input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4px #7287ad18}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;height:48px;border:0;border-radius:13px;background:linear-gradient(135deg,#111827,#263a5e);color:#fff;font-size:15px;font-weight:850;margin-top:12px;box-shadow:0 6px 14px #1118271a;transition:transform .12s,box-shadow .12s}
+.btn:active{transform:translateY(1px);box-shadow:0 3px 8px #11182718}
+.btn.light{background:#eef2f7;color:#172033;box-shadow:none}
+.item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid #edf0f4}
+.item:last-child{border:0}
+.icon{width:43px;height:43px;flex:0 0 43px;border-radius:13px;background:linear-gradient(145deg,#f1f4f9,#e8edf5);display:grid;place-items:center;font-size:20px}
+.main{min-width:0;flex:1}
+.name{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.right{text-align:right;min-width:76px}
+.amt{font-weight:850;font-size:14px}
+.del{border:0;background:#fff1f2;color:#b42318;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:800;margin-top:5px}
+.report{background:#f8fafc;border:1px solid #edf0f4;border-radius:16px;padding:13px;margin-top:12px;box-shadow:inset 0 1px 0 #fff}
+.report table{font-size:13px}
+.report th{font-weight:850;color:#344054}
+.report td{color:#475467}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.empty{text-align:center;color:var(--muted);padding:22px}
+@media(max-width:520px){
+  main{padding:12px 11px 28px}
+  .card{padding:15px;border-radius:18px}
+  .grid2{gap:8px}
+  .title{font-size:17px}
+  .brand{font-size:20px}
+  input,select,.btn{height:47px}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.10</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.11</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -35,7 +67,7 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.10</div></div>
+<div class="head"><div class="title">📊 Expense Report</div><div class="pill">V5.11</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -118,7 +150,7 @@ $("pdf").onclick=()=>{
  const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0),cats={};
  rows.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
- doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.10",14,16);
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5.11",14,16);
  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
  const body=[...rows].sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
