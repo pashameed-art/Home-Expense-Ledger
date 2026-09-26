@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V4</title>
+<title>Home Expense Ledger V5</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
@@ -22,10 +22,11 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 .item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.icon{width:42px;height:42px;border-radius:13px;background:var(--soft);display:grid;place-items:center}.main{min-width:0;flex:1}.name{font-weight:800;font-size:14px}.meta{font-size:11px;color:var(--muted);margin-top:3px}.right{text-align:right}.amt{font-weight:850}.del{border:0;background:#fff1f2;color:#b42318;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:750;margin-top:5px}
 .report{background:#f8fafc;border-radius:16px;padding:13px;margin-top:12px}.big{font-size:26px;font-weight:850}.cat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.cat:last-child{border:0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.empty{text-align:center;color:var(--muted);padding:22px}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V4</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5</div></div>
 <div class="hero"><div class="heroLabel">TOTAL EXPENSE</div><div class="heroAmount" id="total">₹0</div><div class="heroBottom"><span id="count">0 entries</span><span>Local &amp; private</span></div></div>
 </header>
 <main>
@@ -34,8 +35,10 @@ label{display:block;font-size:12px;font-weight:750;color:#344054;margin:10px 0 6
 <div class="grid2"><div><label>Category</label><select id="category"><option>Grocery</option><option>Vegetables</option><option>Fuel</option><option>EB / Electricity</option><option>Water</option><option>Mobile / Recharge</option><option>House Maintenance</option><option>Medical</option><option>Car</option><option>Travel</option><option>Clothing</option><option>Food / Hotel</option><option>Other</option></select></div><div><label>Amount</label><input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="₹ 0" required></div></div>
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><button class="btn">+ Add Expense</button></form></section>
 
-<section class="card"><div class="head"><div class="title">Expense Report</div><div class="pill">DATE RANGE</div></div>
-<div class="grid2"><div><label>From</label><input id="from" type="date"></div><div><label>To</label><input id="to" type="date"></div></div><button class="btn light" id="view" type="button">View Report</button><div id="report"></div></section>
+<section class="card"><div class="head"><div class="title">Expense Report</div><div class="pill">DATE RANGE + PDF</div></div>
+<div class="grid2"><div><label>From</label><input id="from" type="date"></div><div><label>To</label><input id="to" type="date"></div></div><button class="btn light" id="view" type="button">View Report</button>
+<button class="btn" id="pdf" type="button">📄 Export PDF</button>
+<div id="report"></div></section>
 
 <section class="card"><div class="head"><div class="title">Recent Expenses</div><div class="pill" id="listTotal">₹0</div></div><div id="list"></div></section>
 
@@ -54,6 +57,24 @@ window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==i
 function report(){let a=$("from").value,b=$("to").value;if(a&&b&&a>b){$("report").innerHTML='<div class="report" style="color:#b42318">From date cannot be after To date.</div>';return}let rows=data.filter(e=>(!a||e.date>=a)&&(!b||e.date<=b)),t=rows.reduce((s,e)=>s+Number(e.amount||0),0),c={};rows.forEach(e=>c[e.category]=(c[e.category]||0)+Number(e.amount||0));let o=`<div class="report"><div style="font-size:12px;color:#667085">${rows.length} entries</div><div class="big">${money(t)}</div>`;if(rows.length){o+='<div style="margin-top:12px;font-weight:800;font-size:13px">Category-wise Total</div>';Object.entries(c).sort((x,y)=>y[1]-x[1]).forEach(([k,v])=>o+=`<div class="cat"><span>${esc(k)}</span><b>${money(v)}</b></div>`)}o+="</div>";$("report").innerHTML=o}
 $("form").onsubmit=e=>{e.preventDefault();let n=Number($("amount").value);if(!Number.isFinite(n)||n<0)return;data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),date:$("date").value,expense:$("expense").value.trim(),category:$("category").value,amount:n,notes:$("notes").value.trim()});save();e.target.reset();$("date").value=new Date().toISOString().slice(0,10);$("expense").focus()}
 $("view").onclick=report;$("from").onchange=report;$("to").onchange=report;
+$("pdf").onclick=()=>{
+ let a=$("from").value,b=$("to").value;
+ if(a&&b&&a>b){alert("From date cannot be after To date.");return}
+ let rows=data.filter(e=>(!a||e.date>=a)&&(!b||e.date<=b));
+ if(!rows.length){alert("No expenses found for the selected date range.");return}
+ if(!window.jspdf){alert("PDF library is still loading. Please try again.");return}
+ const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+ doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("Home Expense Ledger V5",14,16);
+ doc.setFont("helvetica","normal");doc.setFontSize(9);
+ doc.text(`From: ${a||"All"}    To: ${b||"All"}`,14,23);
+ const total=rows.reduce((s,e)=>s+Number(e.amount||0),0);
+ doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(`Total Expense: Rs. ${Number(total).toLocaleString("en-IN",{maximumFractionDigits:2})}`,14,31);
+ const body=rows.sort((x,y)=>(x.date+x.id).localeCompare(y.date+y.id)).map(e=>[
+   e.date,e.expense,e.category,Number(e.amount||0).toLocaleString("en-IN",{maximumFractionDigits:2}),e.notes||""
+ ]);
+ doc.autoTable({startY:37,head:[["Date","Expense","Category","Amount","Notes"]],body,styles:{font:"helvetica",fontSize:8,cellPadding:2.5},headStyles:{fontStyle:"bold"},columnStyles:{0:{cellWidth:23},1:{cellWidth:38},2:{cellWidth:34},3:{cellWidth:27,halign:"right"},4:{cellWidth:"auto"}}});
+ doc.save("Home-Expense-Report.pdf");
+};
 $("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"4.0",exportedAt:new Date().toISOString(),entries:data},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("restore").onclick=()=>$("file").click();$("file").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let j=JSON.parse(await f.text()),x=Array.isArray(j)?j:j.entries;if(!Array.isArray(x))throw 0;if(confirm("Restore backup? Current entries will be replaced.")){data=x;save();alert("Backup restored.")}}catch{alert("Invalid backup file.")}e.target.value=""}
 render();report();
