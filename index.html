@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.18</title>
+<title>Home Expense Ledger V5.19</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.18</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.19</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
@@ -95,12 +95,13 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 </main>
 <script>
 const KEY="homeExpenseLedgerV1",$=x=>document.getElementById(x),money=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2}),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const fmtDate=s=>{const v=String(s||"");return /^\d{4}-\d{2}-\d{2}$/.test(v)?v.split("-").reverse().join("/"):v};
 let data=[];try{data=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(data))data=[]}catch(e){data=[]}
 const today=new Date().toISOString().slice(0,10);$("date").value=today;$("to").value=today;$("from").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
 const emo={Grocery:"🛒","Household / Home Expense":"🏠","Property Tax / House Tax":"🏛️",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
 let editingId=null;
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();report()}
-function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);$("listCount").textContent=data.length+(data.length===1?" entry":" entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(e.date)} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="edit" type="button" onclick="editExpense('${e.id}')">✏️ Edit</button><button class="del" type="button" onclick="del('${e.id}')">🗑️ Delete</button></div>`;b.appendChild(d)})}
+function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);$("listCount").textContent=data.length+(data.length===1?" entry":" entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(fmtDate(e.date))} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="edit" type="button" onclick="editExpense('${e.id}')">✏️ Edit</button><button class="del" type="button" onclick="del('${e.id}')">🗑️ Delete</button></div>`;b.appendChild(d)})}
 const HOME_EXPENSE="வீட்டு செலவு";
 function syncExpenseForCategory(){
   const cat=$("category"), exp=$("expense");
@@ -152,7 +153,7 @@ window.generateExpenseReport=function report(){
    o+='</tr></thead><tbody>';
    rows.forEach(e=>{
      o+='<tr style="border-bottom:1px solid var(--line)">';
-     o+='<td style="padding:9px 6px;white-space:nowrap">'+esc(e.date||"")+'</td>';
+     o+='<td style="padding:9px 6px;white-space:nowrap">'+esc(fmtDate(e.date||""))+'</td>';
      o+='<td style="padding:9px 6px">'+esc(e.expense||"")+'</td>';
      o+='<td style="padding:9px 6px;text-align:right;font-weight:800;white-space:nowrap">'+money(e.amount)+'</td>';
      o+='</tr>';
@@ -190,7 +191,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.18</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.19</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
