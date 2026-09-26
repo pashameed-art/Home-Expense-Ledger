@@ -295,6 +295,6 @@ $("file").onchange=async e=>{
  }catch{alert("Invalid backup file.")} e.target.value="";
 }
 render();updateMonthSummary();report();
-if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js",{scope:"./",updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
+if("serviceWorker"in navigator){ navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(!window.__swReloaded){ window.__swReloaded=true; window.location.reload(); } }); navigator.serviceWorker.register("./sw.js",{scope:"./",updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}); }
 </script>
 </body></html>
