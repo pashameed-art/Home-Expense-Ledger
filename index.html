@@ -27,7 +27,7 @@ small{color:#6b7280}
 </head>
 <body>
 <header>
-  <h1>🏠 Home Expense Ledger</h1>
+  <h1>🏠 Home Expense Ledger <span style="font-size:12px;font-weight:600;opacity:.7">V2</span></h1>
   <div class="summary"><div><div class="total-label">Total Expense</div><div class="total" id="total">₹0</div></div><small id="count">0 entries</small></div>
 </header>
 <main>
@@ -56,6 +56,16 @@ small{color:#6b7280}
       <h2 style="margin:0;font-size:18px">Expense List</h2><small id="listTotal"></small>
     </div>
     <div id="list"></div>
+  </section>
+
+  <section class="card">
+    <h2 style="margin:0 0 8px;font-size:18px">📊 Expense Report</h2>
+    <div class="row">
+      <div><label>From Date</label><input id="fromDate" type="date"></div>
+      <div><label>To Date</label><input id="toDate" type="date"></div>
+    </div>
+    <button type="button" id="reportBtn">View Report</button>
+    <div id="reportResult" style="margin-top:12px"></div>
   </section>
 
   <section class="card">
@@ -112,6 +122,23 @@ $("fileInput").onchange=async e=>{
    entries=incoming;save();alert("Backup restored.");
  }catch(err){alert("Invalid backup file.");}e.target.value="";
 };
+function showReport(){
+ const from=$("fromDate").value,to=$("toDate").value;
+ if(from && to && from>to){$("reportResult").innerHTML='<div style="padding:12px;background:#fee2e2;color:#991b1b;border-radius:10px">From Date cannot be after To Date.</div>';return;}
+ const filtered=entries.filter(e=>(!from||e.date>=from)&&(!to||e.date<=to));
+ const total=filtered.reduce((s,e)=>s+Number(e.amount||0),0);
+ const cats={}; filtered.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount||0));
+ let out=`<div style="padding:12px;background:#f3f4f6;border-radius:10px"><b>${filtered.length} entries</b><div style="font-size:25px;font-weight:800;margin-top:4px">${money(total)}</div></div>`;
+ if(filtered.length){
+   out+=`<div style="margin-top:12px"><b>Category-wise Total</b>`;
+   Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>out+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee"><span>${esc(k)}</span><b>${money(v)}</b></div>`);
+   out+='</div>';
+ } else out+='<div class="empty">No expenses found for this date range.</div>';
+ $("reportResult").innerHTML=out;
+}
+$("reportBtn").onclick=showReport;
+$("fromDate").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
+$("toDate").value=new Date().toISOString().slice(0,10);
 render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
