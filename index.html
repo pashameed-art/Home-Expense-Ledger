@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.23</title>
+<title>Home Expense Ledger V5.24</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -38,7 +38,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
 .meta{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .right{text-align:right;min-width:76px}
 .amt{font-weight:850;font-size:14px}
-.del,.edit{border:0;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;margin-top:5px;white-space:nowrap}.del{background:#fff1f2;color:#b42318}.edit{background:#eef2ff;color:#344054;margin-right:4px}
+.del,.edit{border:0;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;margin-top:5px;white-space:nowrap}.repeat{border:0;background:#eef2ff;color:#344054;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:750;margin-top:5px}.del{background:#fff1f2;color:#b42318}.edit{background:#eef2ff;color:#344054;margin-right:4px}
 .report{background:#f8fafc;border:1px solid #edf0f4;border-radius:16px;padding:13px;margin-top:12px;box-shadow:inset 0 1px 0 #fff}
 .report table{font-size:13px}
 .report th{font-weight:850;color:#344054}
@@ -54,7 +54,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
   input,select,.btn{height:47px}
 }
 
-/* V5.23 compact mobile layout */
+/* V5.24 compact mobile layout */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 main{width:100%;max-width:620px;margin:0 auto;padding:12px 10px 24px}
 .card{width:100%;padding:13px;margin-bottom:10px;border-radius:17px}
@@ -86,18 +86,24 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
   .item{gap:6px}.icon{width:32px;height:32px;flex-basis:32px;font-size:15px}
   .right{min-width:64px}.del,.edit{padding:5px;font-size:9px}
 }
-</style>
+.fathimaType{display:grid;grid-template-columns:1fr 1fr;gap:8px}.typeBtn{height:42px;border:1px solid #dfe4ec;border-radius:12px;background:#f8fafc;font-weight:800;color:#344054}.typeBtn.active{background:#111827;color:#fff;border-color:#111827}.fathimaSummary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.fathimaBox{padding:10px;border-radius:13px;background:#f7f9fc}.fathimaBox small{display:block;font-size:10px;color:var(--muted);font-weight:800}.fathimaBox b{display:block;margin-top:4px;font-size:16px}.fathimaItem{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line)}.fathimaItem:last-child{border:0}.fathimaMain{min-width:0;flex:1}.fathimaName{font-weight:800;font-size:13px}.fathimaMeta{font-size:10px;color:var(--muted);margin-top:2px}.income{color:#087443}.expenseOut{color:#b42318}.fathimaActions button{border:0;border-radius:8px;padding:4px 6px;font-size:10px;font-weight:800;margin-left:3px}.fathimaEdit{background:#eef2f7;color:#172033}.fathimaDel{background:#fff1f2;color:#b42318}@media(max-width:520px){.fathimaSummary{grid-template-columns:1fr 1fr}.fathimaSummary .fathimaBox:last-child{grid-column:1/-1}}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.23</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.24</div></div>
 </header>
 <main>
 <section class="card"><div class="head"><div class="title">Add Expense</div><div class="pill">QUICK ENTRY</div></div>
 <form id="form"><label>Date</label><input id="date" type="date" required><label>Expense</label><input id="expense" placeholder="What did you spend on?" required>
 <div class="grid2"><div><label>Category</label><select id="category"><option>Car</option><option>Clothing</option><option>EB / Electricity</option><option>Food / Hotel</option><option>Fuel</option><option>Grocery</option><option>House Maintenance</option><option>Household / Home Expense</option><option>Medical</option><option>Mobile / Recharge</option><option>Other</option><option>Property Tax / House Tax</option><option>Travel</option><option>Vegetables</option><option>Water</option></select></div><div><label>Amount</label><input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="₹ 0" required></div></div>
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><div class="grid2"><button class="btn" id="submitBtn">+ Add Expense</button><button class="btn light" id="cancelEdit" type="button" style="display:none">Cancel Edit</button></div></form></section>
+
+<section class="card">
+<div class="head"><div class="title">👩 Fathima வரவு செலவு</div><div class="pill">SEPARATE LEDGER</div></div>
+<div class="fathimaSummary"><div class="fathimaBox"><small>வரவு</small><b id="fIncome" class="income">₹0</b></div><div class="fathimaBox"><small>செலவு</small><b id="fExpense" class="expenseOut">₹0</b></div><div class="fathimaBox"><small>மீதம்</small><b id="fBalance">₹0</b></div></div>
+<form id="fathimaForm" style="margin-top:10px"><label>Date</label><input id="fDate" type="date" required><label>விவரம்</label><input id="fDesc" placeholder="வரவு / செலவு விவரம்" required><label>வகை</label><div class="fathimaType"><button type="button" class="typeBtn active" id="fIncomeBtn">+ வரவு</button><button type="button" class="typeBtn" id="fExpenseBtn">− செலவு</button></div><label>Amount</label><input id="fAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="₹ 0" required><label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="fNotes" placeholder="Optional note"><div class="grid2"><button class="btn" id="fSubmit">+ Add Fathima Entry</button><button class="btn light" id="fCancel" type="button" style="display:none">Cancel Edit</button></div></form><div style="margin-top:12px" id="fList"></div>
+</section>
 
 <section class="card">
 <div class="head"><div class="title">📊 Expense Report</div></div>
@@ -135,12 +141,24 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 <input id="file" type="file" accept=".json,application/json" hidden><p><small>Backup before major updates. Data remains in this device browser storage.</small></p></section>
 </main>
 <script>
-const KEY="homeExpenseLedgerV1",ld=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"),$=x=>document.getElementById(x),money=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2}),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const KEY="homeExpenseLedgerV1",$=x=>document.getElementById(x),money=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2}),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const fmtDate=s=>{const v=String(s||"");return /^\d{4}-\d{2}-\d{2}$/.test(v)?v.split("-").reverse().join("/"):v};
+const FKEY="fathimaLedgerV1";
 let data=[];try{data=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(data))data=[]}catch(e){data=[]}
-const today=ld();$("date").value=today;$("to").value=today;$("from").value=ld(new Date(new Date().getFullYear(),new Date().getMonth(),1));
+const today=new Date().toISOString().slice(0,10);$("date").value=today;$("to").value=today;$("from").value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
 const emo={Grocery:"🛒","Household / Home Expense":"🏠","Property Tax / House Tax":"🏛️",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
 let editingId=null;
+let fathimaData=[];try{fathimaData=JSON.parse(localStorage.getItem(FKEY)||"[]");if(!Array.isArray(fathimaData))fathimaData=[]}catch(e){fathimaData=[]}
+let fEditingId=null,fType="income";
+$("fDate").value=new Date().toISOString().slice(0,10);
+function updateFathima(){const income=fathimaData.filter(e=>e.type==="income").reduce((s,e)=>s+Number(e.amount||0),0),expense=fathimaData.filter(e=>e.type==="expense").reduce((s,e)=>s+Number(e.amount||0),0);$("fIncome").textContent=money(income);$("fExpense").textContent=money(expense);$("fBalance").textContent=money(income-expense);const b=$("fList");b.innerHTML="";if(!fathimaData.length){b.innerHTML='<div class="empty">Fathima வரவு செலவு எதுவும் இல்லை.</div>';return}[...fathimaData].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="fathimaItem";let cls=e.type==="income"?"income":"expenseOut",sign=e.type==="income"?"+":"−";d.innerHTML=`<div class="icon">${e.type==="income"?"💰":"💸"}</div><div class="fathimaMain"><div class="fathimaName">${esc(e.desc)}</div><div class="fathimaMeta">${esc(fmtDate(e.date))}${e.notes?" • "+esc(e.notes):""}</div></div><div style="text-align:right"><div class="${cls}" style="font-weight:900">${sign} ${money(e.amount)}</div><div class="fathimaActions"><button class="fathimaEdit" type="button" onclick="editFathima('${e.id}')">✏️</button><button class="fathimaDel" type="button" onclick="delFathima('${e.id}')">🗑️</button></div></div>`;b.appendChild(d)})}
+function saveFathima(){localStorage.setItem(FKEY,JSON.stringify(fathimaData));updateFathima()}
+function setFType(t){fType=t;$("fIncomeBtn").classList.toggle("active",t==="income");$("fExpenseBtn").classList.toggle("active",t==="expense")}
+$("fIncomeBtn").onclick=()=>setFType("income");$("fExpenseBtn").onclick=()=>setFType("expense");
+window.editFathima=id=>{let e=fathimaData.find(v=>v.id===id);if(!e)return;fEditingId=id;$("fDate").value=e.date||"";$("fDesc").value=e.desc||"";$("fAmount").value=e.amount??"";$("fNotes").value=e.notes||"";setFType(e.type||"income");$("fSubmit").textContent="✓ Update Fathima";$("fCancel").style.display="block";$("fDesc").focus()};
+$("fCancel").onclick=()=>{fEditingId=null;$("fathimaForm").reset();$("fDate").value=new Date().toISOString().slice(0,10);setFType("income");$("fSubmit").textContent="+ Add Fathima Entry";$("fCancel").style.display="none"};
+window.delFathima=id=>{if(confirm("Delete this Fathima entry?")){fathimaData=fathimaData.filter(e=>e.id!==id);if(fEditingId===id)$("fCancel").click();saveFathima()}};
+$("fathimaForm").onsubmit=e=>{e.preventDefault();let n=Number($("fAmount").value);if(!Number.isFinite(n)||n<0)return;let item={date:$("fDate").value,desc:$("fDesc").value.trim(),type:fType,amount:n,notes:$("fNotes").value.trim()};if(fEditingId){let i=fathimaData.findIndex(v=>v.id===fEditingId);if(i>=0)fathimaData[i]={...fathimaData[i],...item};fEditingId=null}else fathimaData.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),...item});saveFathima();e.target.reset();$("fDate").value=new Date().toISOString().slice(0,10);setFType("income");$("fSubmit").textContent="+ Add Fathima Entry";$("fCancel").style.display="none"};
 function updateMonthSummary(){
  const now=new Date(), y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,"0");
  const rows=data.filter(e=>String(e.date||"").startsWith(`${y}-${m}-`));
@@ -150,8 +168,8 @@ function updateMonthSummary(){
  $("monthCount").textContent=String(rows.length);
  $("monthAverage").textContent=money(rows.length?total/rows.length:0);
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render();updateMonthSummary();report()}
-function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);$("listCount").textContent=data.length+(data.length===1?" entry":" entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(fmtDate(e.date))} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="edit" type="button" onclick="editExpense('${e.id}')">✏️ Edit</button><button class="del" type="button" onclick="del('${e.id}')">🗑️ Delete</button></div>`;b.appendChild(d)})}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render();updateMonthSummary();updateFathima();report();updateFathima()}
+function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);$("listCount").textContent=data.length+(data.length===1?" entry":" entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(fmtDate(e.date))} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="edit" type="button" onclick="editExpense('${e.id}')">✏️ Edit</button><button class="repeat" type="button" onclick="repeatExpense('${e.id}')">↻ Repeat</button><button class="del" type="button" onclick="del('${e.id}')">🗑️ Delete</button></div>`;b.appendChild(d)})}
 const HOME_EXPENSE="வீட்டு செலவு";
 function syncExpenseForCategory(){
   const cat=$("category"), exp=$("expense");
@@ -172,8 +190,9 @@ window.editExpense=id=>{
  $("submitBtn").textContent="✓ Update Expense"; $("cancelEdit").style.display="block";
  window.scrollTo({top:0,behavior:"smooth"}); $("expense").focus();
 };
-$("cancelEdit").onclick=()=>{editingId=null;$("form").reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"};
-window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);if(editingId===id){editingId=null;$("form").reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"}save()}}
+$("cancelEdit").onclick=()=>{editingId=null;$("form").reset();$("date").value=new Date().toISOString().slice(0,10);$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"};
+window.repeatExpense=id=>{const e=data.find(v=>v.id===id);if(!e)return;$("date").value=new Date().toISOString().slice(0,10);$("expense").value=e.expense;$("category").value=e.category;$("amount").value=e.amount;$("notes").value=e.notes||"";$("expense").focus();window.scrollTo({top:0,behavior:"smooth"})}
+window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);if(editingId===id){editingId=null;$("form").reset();$("date").value=new Date().toISOString().slice(0,10);$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"}save()}}
 window.generateExpenseReport=function report(){
  const a=$("from").value,b=$("to").value;
  const q=($("reportSearch").value||"").trim().toLowerCase();
@@ -221,7 +240,7 @@ $("form").onsubmit=e=>{
  e.preventDefault();let n=Number($("amount").value);if(!Number.isFinite(n)||n<0)return;
  const item={date:$("date").value,expense:$("expense").value.trim(),category:$("category").value,amount:n,notes:$("notes").value.trim()};
  if(editingId){const i=data.findIndex(v=>v.id===editingId);if(i>=0)data[i]={...data[i],...item};editingId=null;}else{data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),...item});}
- save();e.target.reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none";$("expense").focus();
+ save();e.target.reset();$("date").value=new Date().toISOString().slice(0,10);$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none";$("expense").focus();
 }
 $("view").addEventListener("click",report);$("from").addEventListener("change",report);$("to").addEventListener("change",report);$("reportSearch").addEventListener("input",report);$("reportCategory").addEventListener("change",report);
 $("clearReport").addEventListener("click",()=>{$("report").innerHTML="";});
@@ -241,7 +260,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.23</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.24</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
@@ -275,7 +294,7 @@ $("pdf").onclick=async()=>{
  }catch(err){console.error(err);alert("PDF உருவாக்க முடியவில்லை. மீண்டும் முயற்சி செய்யவும்.");}
  finally{wrap.remove();}
 };
-$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.23",exportedAt:new Date().toISOString(),entries:data},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.24",exportedAt:new Date().toISOString(),entries:data,fathimaEntries:fathimaData},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("restore").onclick=()=>$("file").click();
 $("file").onchange=async e=>{
  let f=e.target.files[0]; if(!f)return;
@@ -290,6 +309,7 @@ $("file").onchange=async e=>{
      if(map.has(k)){map.set(k,v);updated++}else{map.set(k,v);added++}
    });
    data=[...map.values()];
+   if(Array.isArray(j.fathimaEntries)){fathimaData=j.fathimaEntries;localStorage.setItem(FKEY,JSON.stringify(fathimaData));updateFathima()}
    save();
    alert("Backup restored safely.\nAdded: "+added+"\nUpdated: "+updated+"\nExisting entries were not deleted.");
  }catch{alert("Invalid backup file.")} e.target.value="";

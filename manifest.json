@@ -1,1 +1,21 @@
-{"name":"Home Expense Ledger V5.22","short_name":"Home Expense","start_url":"./","display":"standalone","background_color":"#eef2f7","theme_color":"#15233f","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "Home Expense Ledger",
+  "short_name": "Home Expense Ledger",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f6fb",
+  "theme_color": "#0b1220",
+  "description": "Home Expense Ledger with Fathima income and expense ledger.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

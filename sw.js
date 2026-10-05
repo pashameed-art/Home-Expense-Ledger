@@ -1,39 +1,4 @@
-const CACHE="home-expense-ledger-v5-22";
-self.addEventListener("install", event => {
-  event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE);
-    const [indexRes, manifestRes]=await Promise.all([
-      fetch("./index.html?swv=521",{cache:"no-store"}),
-      fetch("./manifest.json?swv=521",{cache:"no-store"})
-    ]);
-    await cache.put("./index.html",indexRes);
-    await cache.put("./manifest.json",manifestRes);
-    await cache.put("./",indexRes.clone());
-    await self.skipWaiting();
-  })());
-});
-self.addEventListener("activate", event => {
-  event.waitUntil((async()=>{
-    const keys=await caches.keys();
-    await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
-    await self.clients.claim();
-  })());
-});
-self.addEventListener("fetch", event => {
-  const url=new URL(event.request.url);
-  if(event.request.method!=="GET" || url.origin!==self.location.origin) return;
-  if(event.request.mode==="navigate"){
-    event.respondWith((async()=>{
-      try{
-        const res=await fetch(event.request,{cache:"no-store"});
-        const c=await caches.open(CACHE);
-        await c.put("./index.html",res.clone());
-        return res;
-      }catch(e){
-        return (await caches.match("./index.html")) || fetch(event.request);
-      }
-    })());
-    return;
-  }
-  event.respondWith(caches.match(event.request).then(r=>r||fetch(event.request)));
-});
+const CACHE="home-expense-ledger-v5-24";
+self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["./","./index.html","./manifest.json"])))})
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())))
+self.addEventListener("fetch",e=>e.respondWith(fetch(e.request).then(r=>{if(e.request.method==="GET"){let c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c)).catch(()=>{})}return r}).catch(()=>caches.match(e.request))))
