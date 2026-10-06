@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.25</title>
+<title>Home Expense Ledger V5.26</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -54,7 +54,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
   input,select,.btn{height:47px}
 }
 
-/* V5.25 compact mobile layout */
+/* V5.26 compact mobile layout */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 main{width:100%;max-width:620px;margin:0 auto;padding:12px 10px 24px}
 .card{width:100%;padding:13px;margin-bottom:10px;border-radius:17px}
@@ -91,7 +91,7 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.25</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.26</div></div>
 </header>
 <div class="tabs"><button class="tab on" id="tExp" type="button">📒 Expenses</button><button class="tab" id="tFat" type="button">👩 Fathima</button></div>
 <main>
@@ -102,7 +102,7 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 <label>Notes <span style="color:#98a2b3">(optional)</span></label><input id="notes" placeholder="Optional note"><div class="grid2"><button class="btn" id="submitBtn">+ Add Expense</button><button class="btn light" id="cancelEdit" type="button" style="display:none">Cancel Edit</button></div></form></section>
 
 <section class="card">
-<div class="head"><div class="title">📊 Expense Report</div></div>
+<div class="head"><div class="title">📄 Export PDF</div></div>
 <div class="grid2">
  <div><label>From Date</label><input id="from" type="date"></div>
  <div><label>To Date</label><input id="to" type="date"></div>
@@ -111,25 +111,14 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
  <div><label>Search</label><input id="reportSearch" type="search" placeholder="Expense / Notes / Category"></div>
  <div><label>Category</label><select id="reportCategory"><option value="">All Categories</option><option>Car</option><option>Clothing</option><option>EB / Electricity</option><option>Food / Hotel</option><option>Fuel</option><option>Grocery</option><option>House Maintenance</option><option>Household / Home Expense</option><option>Medical</option><option>Mobile / Recharge</option><option>Other</option><option>Property Tax / House Tax</option><option>Travel</option><option>Vegetables</option><option>Water</option></select></div>
 </div>
-<div class="grid2" style="margin-top:4px">
- <button class="btn light" id="view" type="button" onclick="window.generateExpenseReport()">View Report</button>
- <button class="btn light" id="clearReport" type="button">Clear Report</button>
-</div>
 <div class="grid2" style="margin-top:0">
  <button class="btn" id="pdf" type="button">📄 Export PDF</button>
  <div></div>
 </div>
-<div id="report" style="display:block"></div>
+<div id="report" style="display:none"></div>
 </section>
 
-<section class="card"><div class="head"><div class="title">📅 This Month Summary</div><div class="pill" id="monthLabel">This Month</div></div>
-<div class="grid2">
- <div class="report" style="margin-top:0"><div style="font-size:11px;color:var(--muted);font-weight:800">MONTH EXPENSE</div><div id="monthTotal" style="font-size:21px;font-weight:900;margin-top:4px">₹0</div></div>
- <div class="report" style="margin-top:0"><div style="font-size:11px;color:var(--muted);font-weight:800">ENTRIES</div><div id="monthCount" style="font-size:21px;font-weight:900;margin-top:4px">0</div></div>
-</div>
-<div class="report" style="margin-top:10px"><div style="display:flex;justify-content:space-between;gap:10px"><span style="font-size:12px;color:var(--muted);font-weight:800">AVERAGE PER ENTRY</span><span id="monthAverage" style="font-weight:900">₹0</span></div></div>
-<div class="report" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:12px;color:var(--muted);font-weight:800">👩 FATHIMA GIVEN THIS MONTH <span style="font-weight:600;color:#98a2b3">(not in expense total)</span></span><span id="monthFathima" style="font-weight:900;white-space:nowrap">₹0</span></div>
-</section>
+<section class="card"><div class="report" style="margin:0;display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:12px;color:var(--muted);font-weight:800">👩 FATHIMA GIVEN THIS MONTH</span><span id="monthFathima" style="font-weight:900;white-space:nowrap">₹0</span></div></section>
 
 <section class="card"><div class="head"><div class="title">Recent Expenses</div><div style="display:flex;gap:6px;align-items:center"><div class="pill" id="listCount">0</div><div class="pill" id="listTotal">₹0</div></div></div><div id="list"></div></section>
 
@@ -164,15 +153,7 @@ let data=[];try{data=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArr
 const today=ld();$("date").value=today;$("to").value=today;$("from").value=ld(new Date(new Date().getFullYear(),new Date().getMonth(),1));
 const emo={Grocery:"🛒","Household / Home Expense":"🏠","Property Tax / House Tax":"🏛️",Vegetables:"🥬",Fuel:"⛽","EB / Electricity":"💡",Water:"💧","Mobile / Recharge":"📱","House Maintenance":"🏠",Medical:"💊",Car:"🚗",Travel:"🚌",Clothing:"👕","Food / Hotel":"🍽️",Other:"📦"};
 let editingId=null;
-function updateMonthSummary(){
- const now=new Date(), y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,"0");
- const rows=data.filter(e=>String(e.date||"").startsWith(`${y}-${m}-`));
- const total=rows.reduce((s,e)=>s+Number(e.amount||0),0);
- $("monthLabel").textContent=now.toLocaleString("en-IN",{month:"long",year:"numeric"});
- $("monthTotal").textContent=money(total);
- $("monthCount").textContent=String(rows.length);
- $("monthAverage").textContent=money(rows.length?total/rows.length:0);
-}
+function updateMonthSummary(){}
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();updateMonthSummary();report()}
 function render(){let t=data.reduce((s,e)=>s+Number(e.amount||0),0);$("listTotal").textContent=money(t);$("listCount").textContent=data.length+(data.length===1?" entry":" entries");let b=$("list");b.innerHTML="";if(!data.length){b.innerHTML='<div class="empty">No expenses yet.</div>';return}[...data].sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).forEach(e=>{let d=document.createElement("div");d.className="item";d.innerHTML=`<div class="icon">${emo[e.category]||"💰"}</div><div class="main"><div class="name">${esc(e.expense)}</div><div class="meta">${esc(fmtDate(e.date))} • ${esc(e.category)}${e.notes?" • "+esc(e.notes):""}</div></div><div class="right"><div class="amt">${money(e.amount)}</div><button class="edit" type="button" onclick="editExpense('${e.id}')">✏️ Edit</button><button class="del" type="button" onclick="del('${e.id}')">🗑️ Delete</button></div>`;b.appendChild(d)})}
 const HOME_EXPENSE="வீட்டு செலவு";
@@ -197,7 +178,7 @@ window.editExpense=id=>{
 };
 $("cancelEdit").onclick=()=>{editingId=null;$("form").reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"};
 window.del=id=>{if(confirm("Delete this expense?")){data=data.filter(e=>e.id!==id);if(editingId===id){editingId=null;$("form").reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none"}save()}}
-function report(){
+function report(){return;
  const a=$("from").value,b=$("to").value;
  const q=($("reportSearch").value||"").trim().toLowerCase();
  const cat=$("reportCategory").value||"";
@@ -248,8 +229,8 @@ $("form").onsubmit=e=>{
  if(editingId){const i=data.findIndex(v=>v.id===editingId);if(i>=0)data[i]={...data[i],...item};editingId=null;}else{data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),...item});}
  save();e.target.reset();$("date").value=ld();$("submitBtn").textContent="+ Add Expense";$("cancelEdit").style.display="none";$("expense").focus();
 }
-$("view").addEventListener("click",report);$("from").addEventListener("change",report);$("to").addEventListener("change",report);$("reportSearch").addEventListener("input",report);$("reportCategory").addEventListener("change",report);
-$("clearReport").addEventListener("click",()=>{$("report").innerHTML="";});
+$("from").addEventListener("change",report);$("to").addEventListener("change",report);$("reportSearch").addEventListener("input",report);$("reportCategory").addEventListener("change",report);
+
 const fmtPDFDate=s=>s?s.split("-").reverse().join("/"):"All";
 $("pdf").onclick=async()=>{
  let a=$("from").value,b=$("to").value;
@@ -266,7 +247,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.25</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.26</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
@@ -300,7 +281,7 @@ $("pdf").onclick=async()=>{
  }catch(err){console.error(err);alert("PDF உருவாக்க முடியவில்லை. மீண்டும் முயற்சி செய்யவும்.");}
  finally{wrap.remove();}
 };
-$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.25",exportedAt:new Date().toISOString(),entries:data,fathima:fdata},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.26",exportedAt:new Date().toISOString(),entries:data,fathima:fdata},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("restore").onclick=()=>$("file").click();
 $("file").onchange=async e=>{
  let f=e.target.files[0]; if(!f)return;
