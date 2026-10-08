@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Home Expense Ledger">
 <link rel="manifest" href="./manifest.json">
-<title>Home Expense Ledger V5.26</title>
+<title>Home Expense Ledger V5.27</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--soft:#eef2f7;--accent:#111827;--accent2:#243b64}
 *{box-sizing:border-box}
@@ -54,7 +54,7 @@ input:focus,select:focus{border-color:#7287ad;background:#fff;box-shadow:0 0 0 4
   input,select,.btn{height:47px}
 }
 
-/* V5.26 compact mobile layout */
+/* V5.27 compact mobile layout */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 main{width:100%;max-width:620px;margin:0 auto;padding:12px 10px 24px}
 .card{width:100%;padding:13px;margin-bottom:10px;border-radius:17px}
@@ -91,7 +91,7 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 </head>
 <body>
 <header>
-<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.26</div></div>
+<div class="top"><div><div class="brand">🏠 Home Expense Ledger</div><div class="sub">Simple • Private • Organized</div></div><div class="version">V5.27</div></div>
 </header>
 <div class="tabs"><button class="tab on" id="tExp" type="button">📒 Expenses</button><button class="tab" id="tFat" type="button">👩 Fathima</button></div>
 <main>
@@ -125,6 +125,9 @@ input,select,.btn{height:43px;font-size:14px;border-radius:11px}
 <section class="card"><div class="head"><div class="title">💾 Data Safety</div><div class="pill">SAFE BACKUP</div></div>
 <div class="actions"><button class="btn light" id="backup" type="button">Backup JSON</button><button class="btn light" id="restore" type="button">Restore JSON</button></div>
 <input id="file" type="file" accept=".json,application/json" hidden><p><small>Backup before major updates. Data remains in this device browser storage.</small></p></section>
+<section class="card"><div class="head"><div class="title">🔄 App Update</div><div class="pill">V5.27</div></div>
+<div style="font-size:13px;color:var(--muted);margin-bottom:10px">புதிய version வரவில்லை என்றால் இதைத் தட்டுங்கள். உங்கள் data அழியாது.</div>
+<button class="btn light" type="button" onclick="appRefresh()">Update / Refresh App</button></section>
 </div>
 <div id="paneFat" style="display:none">
 <section class="card"><div class="head"><div class="title">👩 Fathima</div><div class="pill" id="fMonthLbl">This Month</div></div>
@@ -247,7 +250,7 @@ $("pdf").onclick=async()=>{
  const wrap=document.createElement("div");
  wrap.style.cssText="position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111827;padding:34px 34px 40px;box-sizing:border-box;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif;font-size:14px;line-height:1.45;";
  wrap.innerHTML=`
-   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.26</div>
+   <div style="font-size:25px;font-weight:800;margin-bottom:8px">Home Expense Ledger V5.27</div>
    <div style="font-size:14px;margin-bottom:8px">From: ${fmtPDFDate(a)} &nbsp;&nbsp; To: ${fmtPDFDate(b)}</div>
    <div style="font-size:17px;font-weight:800;margin-bottom:22px">Total Expense: ${moneyPDF(total)}</div>
    <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Noto Sans Tamil','Lohit Tamil','Nirmala UI',Arial,sans-serif">
@@ -281,7 +284,7 @@ $("pdf").onclick=async()=>{
  }catch(err){console.error(err);alert("PDF உருவாக்க முடியவில்லை. மீண்டும் முயற்சி செய்யவும்.");}
  finally{wrap.remove();}
 };
-$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.26",exportedAt:new Date().toISOString(),entries:data,fathima:fdata},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$("backup").onclick=()=>{let blob=new Blob([JSON.stringify({app:"Home Expense Ledger",version:"5.27",exportedAt:new Date().toISOString(),entries:data,fathima:fdata},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="home-expense-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("restore").onclick=()=>$("file").click();
 $("file").onchange=async e=>{
  let f=e.target.files[0]; if(!f)return;
@@ -344,6 +347,15 @@ $("fShare").onclick=()=>{const rows=frows().slice().reverse();if(!rows.length){a
  rows.forEach(e=>L.push(fmtDate(e.date)+"  "+money(e.amount)+" ("+(e.mode||"GPay")+")"+(e.notes?" • "+e.notes:"")));
  L.push("","Total: "+money(fsum(rows)));const text=L.join("\n");
  if(navigator.share){navigator.share({text}).catch(()=>{})}else window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank")};
+async function appRefresh(){
+  try{
+    const base=location.origin+location.pathname.replace(/[^/]*$/,'');
+    const rs=await navigator.serviceWorker.getRegistrations();
+    for(const r of rs){ if(r.scope.indexOf(base)===0) await r.unregister(); }
+    for(const k of await caches.keys()) await caches.delete(k);
+  }catch(e){}
+  location.reload();
+}
 function showTab(n){const f=n==="fat";$("paneExp").style.display=f?"none":"";$("paneFat").style.display=f?"":"none";
  $("tExp").classList.toggle("on",!f);$("tFat").classList.toggle("on",f);
  try{sessionStorage.setItem("homeExpTab",n)}catch(e){}
